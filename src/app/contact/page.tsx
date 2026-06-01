@@ -65,7 +65,7 @@ export default function ContactPage() {
               </div>
               <div>
                 <p className="font-medium text-gray-900">Email</p>
-                <p className="text-sm text-gray-500">support@resumeai.ua</p>
+                <p className="text-sm text-gray-500">support@resumeai.study</p>
               </div>
             </div>
             <div className="flex items-start gap-3">
@@ -84,9 +84,15 @@ export default function ContactPage() {
               {sent ? (
                 <div className="text-center py-8">
                   <CheckCircle className="h-14 w-14 text-green-500 mx-auto mb-3" />
-                  <h3 className="font-semibold text-gray-900 text-lg mb-2">Повідомлення надіслано!</h3>
-                  <p className="text-gray-500 text-sm mb-4">Ми зв'яжемося з вами найближчим часом.</p>
-                  <Button variant="outline" onClick={() => setSent(false)}>Надіслати ще</Button>
+                  <h3 className="font-semibold text-gray-900 text-lg mb-2">
+                    Повідомлення надіслано!
+                  </h3>
+                  <p className="text-gray-500 text-sm mb-4">
+                    Ми зв&apos;яжемося з вами найближчим часом.
+                  </p>
+                  <Button variant="outline" onClick={() => setSent(false)}>
+                    Надіслати ще
+                  </Button>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -117,7 +123,9 @@ export default function ContactPage() {
                     error={errors.subject?.message}
                   />
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Повідомлення</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Повідомлення
+                    </label>
                     <textarea
                       rows={5}
                       placeholder="Ваше повідомлення..."
@@ -127,10 +135,16 @@ export default function ContactPage() {
                       }`}
                     />
                     {errors.message && (
-                      <p className="mt-1 text-xs text-red-600">{errors.message.message}</p>
+                      <p className="mt-1 text-xs text-red-600">
+                        {errors.message.message}
+                      </p>
                     )}
                   </div>
-                  <Button type="submit" className="w-full" loading={isSubmitting}>
+                  <Button
+                    type="submit"
+                    className="w-full"
+                    loading={isSubmitting}
+                  >
                     Надіслати
                   </Button>
                 </form>
