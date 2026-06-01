@@ -1,6 +1,7 @@
 export const dynamic = "force-dynamic";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
+import Image from "next/image";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { Card } from "@/components/ui/Card";
@@ -65,8 +66,12 @@ export default async function BlogPage({
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {posts.map((post) => (
               <Card key={post.id} padding="none" className="overflow-hidden hover:shadow-md transition-shadow">
-                <div className="h-40 bg-linear-to-br from-indigo-100 to-purple-100 flex items-center justify-center">
-                  <span className="text-4xl">📄</span>
+                <div className="relative h-40 bg-linear-to-br from-indigo-100 to-purple-100 flex items-center justify-center overflow-hidden">
+                  {post.imageUrl ? (
+                    <Image src={post.imageUrl} alt={post.title} fill className="object-cover" />
+                  ) : (
+                    <span className="text-4xl">📄</span>
+                  )}
                 </div>
                 <div className="p-5">
                   <div className="flex items-center gap-2 mb-3">
