@@ -53,38 +53,36 @@ export async function POST(
   };
   const mimeType = mimeMap[resume.fileType] ?? "application/pdf";
 
-  // Run async
-  (async () => {
-    try {
-      const text = await extractTextFromFile(buffer, mimeType);
-      const result = await analyzeResume(text);
-      await prisma.resumeAnalysis.update({
-        where: { id: analysis.id },
-        data: {
-          status: "COMPLETED",
-          overallScore: result.overallScore,
-          structureScore: result.structureScore,
-          contactScore: result.contactScore,
-          experienceScore: result.experienceScore,
-          educationScore: result.educationScore,
-          skillsScore: result.skillsScore,
-          hasContact: result.hasContact,
-          hasExperience: result.hasExperience,
-          hasEducation: result.hasEducation,
-          skills: result.skills,
-          keywords: result.keywords,
-          recommendations: result.recommendations,
-          weaknesses: result.weaknesses,
-          rawAnalysis: result as object,
-        },
-      });
-    } catch {
-      await prisma.resumeAnalysis.update({
-        where: { id: analysis.id },
-        data: { status: "FAILED" },
-      });
-    }
-  })();
+  try {
+    const text = await extractTextFromFile(buffer, mimeType);
+    const result = await analyzeResume(text);
+    await prisma.resumeAnalysis.update({
+      where: { id: analysis.id },
+      data: {
+        status: "COMPLETED",
+        overallScore: result.overallScore,
+        structureScore: result.structureScore,
+        contactScore: result.contactScore,
+        experienceScore: result.experienceScore,
+        educationScore: result.educationScore,
+        skillsScore: result.skillsScore,
+        hasContact: result.hasContact,
+        hasExperience: result.hasExperience,
+        hasEducation: result.hasEducation,
+        skills: result.skills,
+        keywords: result.keywords,
+        recommendations: result.recommendations,
+        weaknesses: result.weaknesses,
+        rawAnalysis: result as object,
+      },
+    });
+  } catch {
+    await prisma.resumeAnalysis.update({
+      where: { id: analysis.id },
+      data: { status: "FAILED" },
+    });
+    return NextResponse.json({ error: "Analysis failed" }, { status: 500 });
+  }
 
   return NextResponse.json({ success: true });
 }
