@@ -29,7 +29,14 @@ export async function POST(req: NextRequest) {
   const storagePath = `${session.user.id}/${Date.now()}-${file.name}`;
 
   // Upload to Supabase Storage
-  const fileUrl = await uploadFile(RESUME_BUCKET, storagePath, buffer, file.type);
+  let fileUrl: string;
+  try {
+    fileUrl = await uploadFile(RESUME_BUCKET, storagePath, buffer, file.type);
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    console.error("Storage upload error:", msg);
+    return NextResponse.json({ error: `Помилка збереження файлу: ${msg}` }, { status: 500 });
+  }
 
   // Create resume record
   const resume = await prisma.resume.create({

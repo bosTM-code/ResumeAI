@@ -54,8 +54,8 @@ export default function UploadPage() {
 
       const res = await fetch("/api/upload", { method: "POST", body: formData });
       if (!res.ok) {
-        const body = await res.json();
-        setError(body.error || "Помилка завантаження");
+        const body = await res.json().catch(() => ({}));
+        setError(body.error || `Помилка завантаження (${res.status})`);
         return;
       }
 
