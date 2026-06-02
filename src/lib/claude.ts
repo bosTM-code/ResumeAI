@@ -1,5 +1,4 @@
 import Anthropic from "@anthropic-ai/sdk";
-import { getMcpClient } from "./mcp/client";
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY!,
@@ -64,3 +63,4 @@ Respond with ONLY a valid JSON object (no markdown, no explanation):
     .replace(/\n?```$/i, "")
     .trim();
   return JSON.parse(cleaned) as ResumeAnalysisResult;
+}
