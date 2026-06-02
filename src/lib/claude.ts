@@ -50,16 +50,23 @@ After using the tools, respond with ONLY a valid JSON object (no markdown, no ex
   "hasContact": <true/false>,
   "hasExperience": <true/false>,
   "hasEducation": <true/false>,
-  "skills": [<list of skills found in resume, max 20 strings>],
-  "keywords": [<list of important keywords/technologies found, max 20 strings>],
-  "recommendations": [<list of 5-8 specific improvement recommendations>],
-  "weaknesses": [<list of 3-5 identified weaknesses or missing elements>]
+  "skills": [<list of skills found in resume, max 20 strings in Ukrainian>],
+  "keywords": [<list of important keywords/technologies found, max 20 strings in Ukrainian>],
+  "recommendations": [<list of 5-8 specific improvement recommendations in Ukrainian>],
+  "weaknesses": [<list of 3-5 identified weaknesses or missing elements in Ukrainian>]
 }`;
 
   const messages: Anthropic.MessageParam[] = [
     {
       role: "user",
-      content: `Please analyze this resume. First use the tools to get scoring criteria and relevant ATS keywords, then provide the full JSON analysis.\n\nResume text:\n---\n${resumeText}\n---`,
+      content: `Please analyze this resume. First use the tools to get scoring criteria and relevant ATS keywords, then provide the full JSON analysis.
+
+IMPORTANT: All text fields (skills, keywords, recommendations, weaknesses) must be in Ukrainian language.
+
+Resume text:
+---
+${resumeText}
+---`,
     },
   ];
 
