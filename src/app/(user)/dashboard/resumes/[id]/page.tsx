@@ -56,7 +56,7 @@ export default async function ResumeDetailPage({
           </p>
         </div>
         <div className="flex gap-2">
-          <a href={resume.fileUrl} target="_blank" rel="noopener noreferrer">
+          <a href={`/api/resumes/${resume.id}/download`} target="_blank" rel="noopener noreferrer">
             <Button variant="outline" size="sm">
               <Download className="h-4 w-4" />
               Завантажити
