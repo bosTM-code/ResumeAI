@@ -55,8 +55,7 @@ export async function POST(req: NextRequest) {
     data: { resumeId: resume.id, status: "PENDING" },
   });
 
-  // Run analysis asynchronously (fire and forget so upload returns fast)
-  runAnalysis(resume.id, analysis.id, buffer, file.type).catch(console.error);
+  await runAnalysis(resume.id, analysis.id, buffer, file.type);
 
   return NextResponse.json({ resumeId: resume.id }, { status: 201 });
 }
