@@ -1,18 +1,18 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
-const { mockExtractRawText, mockGetText } = vi.hoisted(() => ({
+const { mockExtractRawText, mockGetDocument, mockGetPage, mockGetTextContent } = vi.hoisted(() => ({
   mockExtractRawText: vi.fn(),
-  mockGetText: vi.fn(),
+  mockGetDocument: vi.fn(),
+  mockGetPage: vi.fn(),
+  mockGetTextContent: vi.fn(),
 }));
 
 vi.mock("mammoth", () => ({
   default: { extractRawText: mockExtractRawText },
 }));
 
-vi.mock("pdf-parse", () => ({
-  PDFParse: class {
-    getText = mockGetText;
-  },
+vi.mock("pdfjs-dist", () => ({
+  getDocument: mockGetDocument,
 }));
 
 import { extractTextFromFile } from "@/lib/resumeParser";
@@ -25,28 +25,40 @@ describe("extractTextFromFile", () => {
   const testBuffer = Buffer.from("fake file content");
 
   beforeEach(() => {
-    vi.clearAllMocks();
+    vi.resetAllMocks();
   });
 
   describe("PDF extraction", () => {
+    const setupPdf = (text: string) => {
+      mockGetTextContent.mockResolvedValue({ items: [{ str: text }] });
+      mockGetPage.mockResolvedValue({ getTextContent: mockGetTextContent });
+      mockGetDocument.mockReturnValue({
+        promise: Promise.resolve({ numPages: 1, getPage: mockGetPage }),
+      });
+    };
+
     it("returns extracted text from a PDF buffer", async () => {
-      mockGetText.mockResolvedValue({ text: "Hello from PDF" });
+      setupPdf("Hello from PDF");
 
       const result = await extractTextFromFile(testBuffer, MIME_PDF);
 
-      expect(result).toBe("Hello from PDF");
+      expect(result).toContain("Hello from PDF");
     });
 
     it("extracts text from a PDF buffer and returns the text field", async () => {
-      mockGetText.mockResolvedValue({ text: "PDF second result" });
+      setupPdf("PDF second result");
 
       const result = await extractTextFromFile(testBuffer, MIME_PDF);
 
-      expect(result).toBe("PDF second result");
+      expect(result).toContain("PDF second result");
     });
 
     it("propagates errors thrown by the PDF parser", async () => {
-      mockGetText.mockRejectedValue(new Error("Corrupt PDF"));
+      mockGetTextContent.mockRejectedValue(new Error("Corrupt PDF"));
+      mockGetPage.mockResolvedValue({ getTextContent: mockGetTextContent });
+      mockGetDocument.mockReturnValue({
+        promise: Promise.resolve({ numPages: 1, getPage: mockGetPage }),
+      });
 
       await expect(extractTextFromFile(testBuffer, MIME_PDF)).rejects.toThrow("Corrupt PDF");
     });
